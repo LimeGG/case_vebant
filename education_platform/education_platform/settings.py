@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'djoser',
-    'drf_spectacular'
+    'drf_spectacular',
+    'user_api',
 ]
 
 AUTH_USER_MODEL = 'main.User'

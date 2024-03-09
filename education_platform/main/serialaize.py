@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, MarkedCompetence, Competence, Material
+from .models import User, MarkedCompetence, Competence, Material, Review
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -21,11 +21,8 @@ class UsersSerializer(serializers.ModelSerializer):
         fields = ['id', 'is_active', 'is_staff', 'is_superuser', 'email', 'profession', 'username', 'competence']
 
     def get_competence(self, user):
-        materials = MarkedCompetence.objects.filter(user=user)
-        return MaterialSerializer(materials, many=True).data
-
-
-
+        competence = MarkedCompetence.objects.filter(user=user)
+        return MarkedCompetenceSerializer(competence, many=True).data
 
 
 class MarkedCompetenceSerializer(serializers.ModelSerializer):
@@ -44,11 +41,21 @@ class MaterialSerializer(serializers.ModelSerializer):
 
 class CompetenceSerializer(serializers.ModelSerializer):
     materials = serializers.SerializerMethodField()
-
+    review = serializers.SerializerMethodField()
     class Meta:
         model = Competence
-        fields = ('id', 'name', 'description', 'difficulty', 'is_active', 'materials',)
+        fields = ('id', 'name', 'description', 'difficulty', 'is_active', 'materials', 'review')
 
     def get_materials(self, competence):
         materials = Material.objects.filter(competence=competence)
         return MaterialSerializer(materials, many=True).data
+
+    def get_review(self, competence):
+        review = Review.objects.filter(competence=competence)
+        return ReviewSerialize(review, many=True).data
+
+
+class ReviewSerialize(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ['competence', 'user', 'rating', 'comment']
