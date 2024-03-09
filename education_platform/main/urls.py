@@ -6,7 +6,7 @@ from .views import UserRegistrationView, UserList, UserDetail, MarkedCompetenceA
 urlpatterns = [
     path('register/', UserRegistrationView.as_view(), name='user-registration'),
     path('users/', UserList.as_view()),
-    path('users/int:<pk>/', UserDetail.as_view()),
+    path('users/<int:pk>/', UserDetail.as_view()),
     path('users/competence/', MarkedCompetenceAll.as_view()),
     path('competence/', CompetenceAll.as_view()),
     path('competence/<str:name>', CompetenceDetail.as_view()),

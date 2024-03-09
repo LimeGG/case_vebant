@@ -29,7 +29,7 @@ class Profession(models.Model):
 
 
 class User(AbstractBaseUser):
-    username = models.CharField(max_length=140)
+    username = models.CharField(max_length=140, unique=True)
     email = models.EmailField('Email', unique=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
