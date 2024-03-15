@@ -10,8 +10,8 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from .serialaize import UserSerializer, UsersSerializer, MarkedCompetenceSerializer, \
-    CompetenceSerializer, MaterialSerializer
-from .models import User, MarkedCompetence, Competence, Material
+    CompetenceSerializer, MaterialSerializer, ProfessionSerialize
+from .models import User, MarkedCompetence, Competence, Material, Profession
 
 
 @extend_schema(
@@ -257,3 +257,71 @@ class MaterialDetailView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 ##### Для Администратора ^^^^^^^
+
+########### Методы для создания професий удаление проф редактирование проф. Метод для добавления професии.Метод для просмотра юзера
+
+class ProfEditing(APIView):
+    permission_classes = [AllowAny]
+    authentication_classes = (JWTAuthentication,)
+    required_headers = {
+        'Authorization': 'Bearer <токен>',
+        'Content-Type': 'application/json'
+    }
+    serializer_class = ProfessionSerialize
+
+    @extend_schema(
+        description="Создание Профессии",
+        summary="Профессия"
+    )
+    def post(self, request, name, format=None):
+        # try:
+        #     profession = Profession.objects.get(name=name)
+        # except Profession.DoesNotExist:
+        #     return Response({"error": "Profession not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ProfessionSerialize(data=request.data)
+        if serializer.is_valid():
+            serializer.save(name=name)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    @extend_schema(
+        description="Получение профессии",
+        summary="Профессия"
+    )
+    def get(self, request, name, format=None):
+        try:
+            profession = Profession.objects.get(name=name)
+        except (Profession.DoesNotExist,):
+            return Response({"error": "Profession not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ProfessionSerialize(profession)
+        return Response(serializer.data)
+
+    @extend_schema(
+        description="Обновление профессии",
+        summary="Профессия"
+    )
+    def put(self, request, name, format=None):
+        try:
+            profession = Profession.objects.get(name=name)
+        except (Profession.DoesNotExist,):
+            return Response({"error": "Profession not fount"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ProfessionSerialize(profession, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @extend_schema(
+        description="Удаление Профессии",
+        summary="Профессия"
+    )
+    def delete(self, request, name, format=None):
+        try:
+            profession = Profession.objects.get(name=name)
+        except (Profession.DoesNotExist,):
+            return Response({"error": "Profession not fount"}, status=status.HTTP_404_NOT_FOUND)
+
+        profession.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

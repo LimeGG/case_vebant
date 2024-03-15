@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, MarkedCompetence, Competence, Material, Review
+from .models import User, MarkedCompetence, Competence, Material, Review, Profession
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -28,7 +28,7 @@ class UsersSerializer(serializers.ModelSerializer):
 class MarkedCompetenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = MarkedCompetence
-        fields = ['user', 'competence']
+        fields = ['user', 'competence', 'profession']
 
 
 class MaterialSerializer(serializers.ModelSerializer):
@@ -42,9 +42,15 @@ class MaterialSerializer(serializers.ModelSerializer):
 class CompetenceSerializer(serializers.ModelSerializer):
     materials = serializers.SerializerMethodField()
     review = serializers.SerializerMethodField()
+    profession = serializers.SerializerMethodField()
+
     class Meta:
         model = Competence
-        fields = ('id', 'name', 'description', 'difficulty', 'is_active', 'materials', 'review')
+        fields = ('id', 'name', 'description', 'difficulty', 'is_active', 'materials', 'review', 'profession')
+
+    def get_profession(self, competence):
+        profession = Profession.object.filter(compit=competence)
+        return ProfessionSerialize(profession, many=True).data
 
     def get_materials(self, competence):
         materials = Material.objects.filter(competence=competence)
@@ -59,3 +65,10 @@ class ReviewSerialize(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = ['competence', 'user', 'rating', 'comment']
+
+
+class ProfessionSerialize(serializers.ModelSerializer):
+    class Meta:
+        model = Profession
+        fields = ['name', 'difficult', 'active']
+

@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views import UserRegistrationView, UserList, UserDetail, MarkedCompetenceAll, CompetenceAll, \
-    CompetenceDetail, CompetenceCreate, CompetenceMaterialView
+    CompetenceDetail, CompetenceCreate, CompetenceMaterialView, ProfEditing
 
 urlpatterns = [
     path('register/', UserRegistrationView.as_view(), name='user-registration'),
@@ -14,4 +14,6 @@ urlpatterns = [
     path('competence/<str:competence_name>/add_material/', CompetenceMaterialView.as_view(),
          name='add-material-to-competence'),
     path('competence/<str:competence_name>/materials/<int:material_id>/', CompetenceMaterialView.as_view()),
+    path('profession/', ProfEditing.as_view()),
+    path('profession/<str:name>/', ProfEditing.as_view(), name='profession-editing')
 ]
