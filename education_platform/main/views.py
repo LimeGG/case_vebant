@@ -259,8 +259,7 @@ class MaterialDetailView(APIView):
 ##### Для Администратора ^^^^^^^
 
 ########### Методы для создания професий удаление проф редактирование проф. Метод для добавления професии.Метод для просмотра юзера
-
-class ProfEditing(APIView):
+class Profession(APIView):
     permission_classes = [AllowAny]
     authentication_classes = (JWTAuthentication,)
     required_headers = {
@@ -274,16 +273,21 @@ class ProfEditing(APIView):
         summary="Профессия"
     )
     def post(self, request, name, format=None):
-        # try:
-        #     profession = Profession.objects.get(name=name)
-        # except Profession.DoesNotExist:
-        #     return Response({"error": "Profession not found"}, status=status.HTTP_404_NOT_FOUND)
-
         serializer = ProfessionSerialize(data=request.data)
         if serializer.is_valid():
             serializer.save(name=name)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ProfEditing(APIView):
+    permission_classes = [AllowAny]
+    authentication_classes = (JWTAuthentication,)
+    required_headers = {
+        'Authorization': 'Bearer <токен>',
+        'Content-Type': 'application/json'
+    }
+    serializer_class = ProfessionSerialize
+
     @extend_schema(
         description="Получение профессии",
         summary="Профессия"
