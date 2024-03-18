@@ -47,7 +47,6 @@ class CompetenceSerializer(serializers.ModelSerializer):
         model = Competence
         fields = ('id', 'name', 'description', 'difficulty', 'is_active', 'materials', 'review')
 
-
     def get_materials(self, competence):
         materials = Material.objects.filter(competence=competence)
         return MaterialSerializer(materials, many=True).data
@@ -68,8 +67,12 @@ class ProfessionSerialize(serializers.ModelSerializer):
         model = Profession
         fields = ['name', 'difficult', 'active']
 
-class ProfessionCompitenceserialeze(serializers.ModelSerializer):
 
+class ProfessionCompitenceSerialize(serializers.ModelSerializer):
+    profession = serializers.SerializerMethodField()
     class Meta:
         model = ProfessionCompitens
-        fields = ['prof', 'compit', 'id_compit']
+        fields = ['prof', 'compit', 'id_comp', 'profession']
+
+    def get_profession(self, profession):
+        profession = Profession.objects.filter(name=profession)

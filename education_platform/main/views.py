@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from .serialaize import UserSerializer, UsersSerializer, MarkedCompetenceSerializer, \
-    CompetenceSerializer, MaterialSerializer, ProfessionSerialize
+    CompetenceSerializer, MaterialSerializer, ProfessionSerialize, ProfessionCompitenceSerialize
 from .models import User, MarkedCompetence, Competence, Material, Profession
 
 
@@ -259,6 +259,28 @@ class MaterialDetailView(APIView):
 ##### Для Администратора ^^^^^^^
 
 ########### Методы для создания професий удаление проф редактирование проф. Метод для добавления професии.Метод для просмотра юзера
+
+class ProfessionCompitence(APIView):
+    permission_classes = [AllowAny]
+    authentication_classes = (JWTAuthentication,)
+    required_headers = {
+        'Authorization': 'Bearer <токен>',
+        'Content-Type': 'application/json'
+    }
+    serializer_class = ProfessionCompitenceSerialize
+
+    @extend_schema(
+        description="Связывание Компитенций и Профессий",
+        summary="Профессия"
+    )
+    def post(self, request, format=None):
+        serializer = ProfessionCompitenceSerialize(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class Profession(APIView):
     permission_classes = [AllowAny]
     authentication_classes = (JWTAuthentication,)
@@ -272,10 +294,10 @@ class Profession(APIView):
         description="Создание Профессии",
         summary="Профессия"
     )
-    def post(self, request, name, format=None):
+    def post(self, request,format=None):
         serializer = ProfessionSerialize(data=request.data)
         if serializer.is_valid():
-            serializer.save(name=name)
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
