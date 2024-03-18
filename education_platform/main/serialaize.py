@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, MarkedCompetence, Competence, Material, Review, Profession
+from .models import User, MarkedCompetence, Competence, Material, Review, Profession, ProfessionCompitens
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -42,15 +42,11 @@ class MaterialSerializer(serializers.ModelSerializer):
 class CompetenceSerializer(serializers.ModelSerializer):
     materials = serializers.SerializerMethodField()
     review = serializers.SerializerMethodField()
-    profession = serializers.SerializerMethodField()
 
     class Meta:
         model = Competence
-        fields = ('id', 'name', 'description', 'difficulty', 'is_active', 'materials', 'review', 'profession')
+        fields = ('id', 'name', 'description', 'difficulty', 'is_active', 'materials', 'review')
 
-    def get_profession(self, competence):
-        profession = Profession.object.filter(compit=competence)
-        return ProfessionSerialize(profession, many=True).data
 
     def get_materials(self, competence):
         materials = Material.objects.filter(competence=competence)
@@ -72,3 +68,8 @@ class ProfessionSerialize(serializers.ModelSerializer):
         model = Profession
         fields = ['name', 'difficult', 'active']
 
+class ProfessionCompitenceserialeze(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProfessionCompitens
+        fields = ['prof', 'compit', 'id_compit']

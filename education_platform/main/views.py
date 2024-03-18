@@ -152,7 +152,7 @@ class CompetenceDetail(APIView):
 
 
 class CompetenceCreate(APIView):
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [AllowAny]
     authentication_classes = (JWTAuthentication,)
     requires_authentication = True
     required_headers = {

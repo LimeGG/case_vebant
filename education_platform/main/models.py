@@ -24,8 +24,8 @@ class UserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
-class UserProfession(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+# class UserProfession(models.Model):
+#     name = models.CharField(max_length=100, unique=True)
 
 
 class User(AbstractBaseUser):
@@ -34,7 +34,7 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
-    profession = models.ForeignKey(UserProfession, on_delete=models.SET_DEFAULT, default=None, blank=True, null=True)
+    profession = models.ForeignKey("Profession", on_delete=models.SET_DEFAULT, default=None, blank=True, null=True)
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
@@ -56,7 +56,7 @@ class Profession(models.Model):
     active = models.BooleanField(default=False)
 
 
-class ProffesionCompitens():
+class ProfessionCompitens(models.Model):
     prof = models.ForeignKey(Profession, on_delete=models.SET_NULL, null=True, blank=True)
     compit = models.ForeignKey("Competence", on_delete=models.SET_NULL, null=True, blank=True)
     id_comp = models.IntegerField(default=0)
@@ -67,7 +67,7 @@ class Competence(models.Model):
     description = models.TextField()
     difficulty = models.CharField(max_length=20)
     is_active = models.BooleanField(default=False)
-    profession = models.ForeignKey(UserProfession, on_delete=models.SET_NULL, null=True, blank=True)
+    profession = models.ForeignKey(Profession, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.name
